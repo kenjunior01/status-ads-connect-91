@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface Profile {
@@ -31,57 +30,73 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchProfiles();
-  }, []);
+    // Mock data for demonstration until database types are updated
+    const mockProfiles: Profile[] = [
+      {
+        id: "1",
+        name: "Ana Silva",
+        niche: "Lifestyle",
+        price_per_post: 25.00,
+        status: "approved",
+        highlight_expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        screenshots: [
+          {
+            id: "1",
+            image_url: "/placeholder.svg",
+            views_count: 850
+          },
+          {
+            id: "2", 
+            image_url: "/placeholder.svg",
+            views_count: 920
+          }
+        ]
+      },
+      {
+        id: "2",
+        name: "Carlos Santos",
+        niche: "Tecnologia",
+        price_per_post: 45.00,
+        status: "approved",
+        highlight_expires_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        screenshots: [
+          {
+            id: "3",
+            image_url: "/placeholder.svg",
+            views_count: 1200
+          },
+          {
+            id: "4",
+            image_url: "/placeholder.svg", 
+            views_count: 1150
+          }
+        ]
+      },
+      {
+        id: "3",
+        name: "Maria Oliveira",
+        niche: "Culinária",
+        price_per_post: 35.00,
+        status: "approved",
+        highlight_expires_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        screenshots: [
+          {
+            id: "5",
+            image_url: "/placeholder.svg",
+            views_count: 750
+          }
+        ]
+      }
+    ];
 
-  const fetchProfiles = async () => {
-    try {
-      // Fetch featured profiles (highlighted)
-      const { data: featured } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          screenshots (*)
-        `)
-        .eq('status', 'approved')
-        .not('highlight_expires_at', 'is', null)
-        .gte('highlight_expires_at', new Date().toISOString())
-        .limit(12);
-
-      // Fetch new profiles
-      const { data: newOnes } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          screenshots (*)
-        `)
-        .eq('status', 'approved')
-        .order('created_at', { ascending: false })
-        .limit(8);
-
-      // Fetch random profiles for discover
-      const { data: discover } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          screenshots (*)
-        `)
-        .eq('status', 'approved')
-        .limit(12);
-
-      setFeaturedProfiles(featured || []);
-      setNewProfiles(newOnes || []);
-      setDiscoverProfiles(discover || []);
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar perfis",
-        variant: "destructive"
-      });
-    } finally {
+    // Simulate loading
+    setTimeout(() => {
+      setFeaturedProfiles(mockProfiles);
+      setNewProfiles(mockProfiles.slice(0, 2));
+      setDiscoverProfiles(mockProfiles);
       setLoading(false);
-    }
-  };
+    }, 1000);
+  }, []);
 
   const calculateAverageViews = (screenshots: any[]) => {
     if (!screenshots || screenshots.length === 0) return 0;
