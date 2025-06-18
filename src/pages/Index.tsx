@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, Eye, Zap, Smartphone } from "lucide-react";
+import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, Eye, Zap, Smartphone, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -28,6 +27,7 @@ const Index = () => {
   const [newProfiles, setNewProfiles] = useState<Profile[]>([]);
   const [discoverProfiles, setDiscoverProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // Mock data for demonstration until database types are updated
@@ -180,20 +180,61 @@ const Index = () => {
                 <p className="text-sm text-gray-600 font-medium">Monetize seus Status</p>
               </div>
             </div>
-            <div className="flex space-x-3">
-              <Button variant="outline" onClick={() => navigate('/auth')} className="border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all duration-300">
-                Entrar
-              </Button>
-              <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-green-500/30 transition-all duration-300 transform hover:scale-105">
-                Cadastrar Grátis
-              </Button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#home" className="text-gray-700 hover:text-green-600 font-medium transition-colors">Início</a>
+              <a href="#featured" className="text-gray-700 hover:text-green-600 font-medium transition-colors">Destaques</a>
+              <a href="#new" className="text-gray-700 hover:text-green-600 font-medium transition-colors">Novos</a>
+              <a href="#discover" className="text-gray-700 hover:text-green-600 font-medium transition-colors">Descobrir</a>
+              <a href="#stats" className="text-gray-700 hover:text-green-600 font-medium transition-colors">Estatísticas</a>
+            </nav>
+
+            <div className="flex items-center space-x-3">
+              <div className="hidden md:flex space-x-3">
+                <Button variant="outline" onClick={() => navigate('/auth')} className="border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all duration-300">
+                  Entrar
+                </Button>
+                <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-green-500/30 transition-all duration-300 transform hover:scale-105">
+                  Cadastrar Grátis
+                </Button>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
             </div>
           </div>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div className="md:hidden py-4 border-t border-gray-200">
+              <nav className="flex flex-col space-y-4">
+                <a href="#home" className="text-gray-700 hover:text-green-600 font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Início</a>
+                <a href="#featured" className="text-gray-700 hover:text-green-600 font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Destaques</a>
+                <a href="#new" className="text-gray-700 hover:text-green-600 font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Novos</a>
+                <a href="#discover" className="text-gray-700 hover:text-green-600 font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Descobrir</a>
+                <a href="#stats" className="text-gray-700 hover:text-green-600 font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Estatísticas</a>
+                <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">
+                  <Button variant="outline" onClick={() => navigate('/auth')} className="border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all duration-300">
+                    Entrar
+                  </Button>
+                  <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-green-500/30 transition-all duration-300 transform hover:scale-105">
+                    Cadastrar Grátis
+                  </Button>
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-24 px-4 relative">
+      <section id="home" className="py-24 px-4 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5 rounded-3xl mx-8"></div>
         <div className="max-w-5xl mx-auto text-center relative">
           <div className="inline-flex items-center bg-gradient-to-r from-green-100 to-blue-100 rounded-full px-6 py-2 mb-8 shadow-lg">
@@ -252,9 +293,72 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-green-600 to-blue-600 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"white\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z\"/%3E%3C/g%3E%3C/svg%3E')" }}></div>
+      {/* Featured Profiles */}
+      {featuredProfiles.length > 0 && (
+        <section id="featured" className="py-20 px-4 bg-gradient-to-br from-white to-green-50/30">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center bg-gradient-to-r from-yellow-100 to-orange-100 rounded-full px-4 py-2 mb-6">
+                <Star className="h-5 w-5 text-yellow-600 mr-2" />
+                <span className="text-yellow-700 font-semibold">Perfis Premium</span>
+              </div>
+              <h3 className="text-4xl font-bold text-gray-900 mb-6">Criadores em Destaque</h3>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">Os melhores criadores de conteúdo estão aqui. Conecte-se com influenciadores de alta qualidade para seus anúncios.</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {featuredProfiles.map((profile) => (
+                <ProfileCard key={profile.id} profile={profile} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* New Profiles */}
+      {newProfiles.length > 0 && (
+        <section id="new" className="py-20 bg-gradient-to-br from-blue-50 to-purple-50 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center bg-gradient-to-r from-blue-100 to-purple-100 rounded-full px-4 py-2 mb-6">
+                <Zap className="h-5 w-5 text-blue-600 mr-2" />
+                <span className="text-blue-700 font-semibold">Novidades</span>
+              </div>
+              <h3 className="text-4xl font-bold text-gray-900 mb-6">Novos Talentos</h3>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">Descubra os mais novos criadores da nossa plataforma. Seja o primeiro a trabalhar com esses talentos emergentes.</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {newProfiles.map((profile) => (
+                <ProfileCard key={profile.id} profile={profile} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Discover Section */}
+      {discoverProfiles.length > 0 && (
+        <section id="discover" className="py-20 px-4 bg-gradient-to-br from-white to-blue-50/30">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center bg-gradient-to-r from-green-100 to-blue-100 rounded-full px-4 py-2 mb-6">
+                <Search className="h-5 w-5 text-green-600 mr-2" />
+                <span className="text-green-700 font-semibold">Explore</span>
+              </div>
+              <h3 className="text-4xl font-bold text-gray-900 mb-6">Descubra Mais Criadores</h3>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">Explore diferentes nichos e encontre o criador perfeito para sua marca. Diversidade de conteúdo e audiências únicas.</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {discoverProfiles.map((profile) => (
+                <ProfileCard key={profile.id} profile={profile} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Stats Section - Moved to after profile listings */}
+      <section id="stats" className="py-20 bg-gradient-to-r from-green-600 to-blue-600 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"white\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z\"/%3E%3C/g%3E%3C/svg%3E')" }}></div>
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="text-center mb-12">
             <h3 className="text-4xl font-bold text-white mb-4">Números que Impressionam</h3>
@@ -292,69 +396,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Featured Profiles */}
-      {featuredProfiles.length > 0 && (
-        <section className="py-20 px-4 bg-gradient-to-br from-white to-green-50/30">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center bg-gradient-to-r from-yellow-100 to-orange-100 rounded-full px-4 py-2 mb-6">
-                <Star className="h-5 w-5 text-yellow-600 mr-2" />
-                <span className="text-yellow-700 font-semibold">Perfis Premium</span>
-              </div>
-              <h3 className="text-4xl font-bold text-gray-900 mb-6">Criadores em Destaque</h3>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">Os melhores criadores de conteúdo estão aqui. Conecte-se com influenciadores de alta qualidade para seus anúncios.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {featuredProfiles.map((profile) => (
-                <ProfileCard key={profile.id} profile={profile} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* New Profiles */}
-      {newProfiles.length > 0 && (
-        <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center bg-gradient-to-r from-blue-100 to-purple-100 rounded-full px-4 py-2 mb-6">
-                <Zap className="h-5 w-5 text-blue-600 mr-2" />
-                <span className="text-blue-700 font-semibold">Novidades</span>
-              </div>
-              <h3 className="text-4xl font-bold text-gray-900 mb-6">Novos Talentos</h3>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">Descubra os mais novos criadores da nossa plataforma. Seja o primeiro a trabalhar com esses talentos emergentes.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {newProfiles.map((profile) => (
-                <ProfileCard key={profile.id} profile={profile} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Discover Section */}
-      {discoverProfiles.length > 0 && (
-        <section className="py-20 px-4 bg-gradient-to-br from-white to-blue-50/30">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center bg-gradient-to-r from-green-100 to-blue-100 rounded-full px-4 py-2 mb-6">
-                <Search className="h-5 w-5 text-green-600 mr-2" />
-                <span className="text-green-700 font-semibold">Explore</span>
-              </div>
-              <h3 className="text-4xl font-bold text-gray-900 mb-6">Descubra Mais Criadores</h3>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">Explore diferentes nichos e encontre o criador perfeito para sua marca. Diversidade de conteúdo e audiências únicas.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {discoverProfiles.map((profile) => (
-                <ProfileCard key={profile.id} profile={profile} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Footer */}
       <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-16 relative overflow-hidden">
