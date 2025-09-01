@@ -14,7 +14,146 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      campaigns: {
+        Row: {
+          advertiser_id: string
+          completed_at: string | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          id: string
+          price: number
+          status: string
+          title: string
+        }
+        Insert: {
+          advertiser_id: string
+          completed_at?: string | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          id?: string
+          price: number
+          status?: string
+          title: string
+        }
+        Update: {
+          advertiser_id?: string
+          completed_at?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          id?: string
+          price?: number
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          badge_level: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          is_verified: boolean | null
+          niche: string | null
+          price_per_post: number | null
+          rating: number | null
+          total_campaigns: number | null
+          total_reviews: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          badge_level?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          is_verified?: boolean | null
+          niche?: string | null
+          price_per_post?: number | null
+          rating?: number | null
+          total_campaigns?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          badge_level?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          is_verified?: boolean | null
+          niche?: string | null
+          price_per_post?: number | null
+          rating?: number | null
+          total_campaigns?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          advertiser_id: string
+          campaign_id: string | null
+          comment: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          rating: number
+        }
+        Insert: {
+          advertiser_id: string
+          campaign_id?: string | null
+          comment?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          rating: number
+        }
+        Update: {
+          advertiser_id?: string
+          campaign_id?: string | null
+          comment?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
