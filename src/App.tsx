@@ -1,27 +1,48 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Navigation } from "@/components/Navigation";
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import { CreatorDashboard } from "./pages/CreatorDashboard";
+import { AdvertiserDashboard } from "./pages/AdvertiserDashboard";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  const [currentPage, setCurrentPage] = useState("index");
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case "index":
+        return <Index />;
+      case "auth":
+        return <Auth />;
+      case "creator-dashboard":
+        return <CreatorDashboard />;
+      case "advertiser-dashboard":
+        return <AdvertiserDashboard />;
+      case "creators":
+        return <Index />; // Placeholder - will show creators section
+      default:
+        return <Index />;
+    }
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <div className="min-h-screen bg-background">
+          <Navigation onNavigate={setCurrentPage} currentPage={currentPage} />
+          {renderPage()}
+        </div>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
