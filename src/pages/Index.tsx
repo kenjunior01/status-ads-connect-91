@@ -5,11 +5,13 @@ import { TrustIndicators, SocialProof, UrgencyCounter } from "@/components/Trust
 import { EnhancedCTA, FloatingCTA } from "@/components/EnhancedCTA";
 import { useProfiles } from "@/hooks/useProfiles";
 import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, BarChart3, PlusCircle, FileText, Settings, Menu, X, Zap, Clock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
-const Index = () => {
-  const navigate = useNavigate();
+interface IndexProps {
+  onNavigate?: (page: string) => void;
+}
+
+const Index = ({ onNavigate }: IndexProps) => {
   const { toast } = useToast();
   const { profiles, loading, getFeaturedProfiles, getNewProfiles, getDiscoverProfiles } = useProfiles();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -140,10 +142,10 @@ const Index = () => {
 
             <div className="flex items-center space-x-3">
               <div className="hidden md:flex space-x-3">
-                <Button variant="outline" onClick={() => navigate('/auth')} className="hover:bg-primary hover:text-primary-foreground">
+                <Button variant="outline" onClick={() => onNavigate?.('auth')} className="hover:bg-primary hover:text-primary-foreground">
                   Entrar
                 </Button>
-                <Button onClick={() => navigate('/auth')} className="bg-primary hover:bg-primary-hover shadow-medium">
+                <Button onClick={() => onNavigate?.('auth')} className="bg-primary hover:bg-primary-hover shadow-medium">
                   Começar Agora
                 </Button>
               </div>
@@ -166,8 +168,8 @@ const Index = () => {
                 <a href="#new" className="text-foreground hover:text-primary font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Novos</a>
                 <a href="#discover" className="text-foreground hover:text-primary font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Descobrir</a>
                 <div className="flex flex-col space-y-3 pt-4 border-t border-border">
-                  <Button variant="outline" onClick={() => navigate('/auth')}>Entrar</Button>
-                  <Button onClick={() => navigate('/auth')} className="bg-primary hover:bg-primary-hover">Começar Agora</Button>
+                  <Button variant="outline" onClick={() => onNavigate?.('auth')}>Entrar</Button>
+                  <Button onClick={() => onNavigate?.('auth')} className="bg-primary hover:bg-primary-hover">Começar Agora</Button>
                 </div>
               </nav>
             </div>
@@ -282,7 +284,7 @@ const Index = () => {
             A primeira plataforma do Brasil que conecta você com empresas que querem anunciar nos seus status do WhatsApp.
           </p>
           <div className="animate-fade-in">
-            <EnhancedCTA variant="hero" onClick={() => navigate('/auth')} />
+            <EnhancedCTA variant="hero" onClick={() => onNavigate?.('auth')} />
           </div>
           
           {/* Added urgency element */}
@@ -397,7 +399,7 @@ const Index = () => {
       <FloatingCTA 
         show={showFloatingCTA} 
         variant="creator" 
-        onClick={() => navigate('/auth')} 
+        onClick={() => onNavigate?.('auth')} 
       />
     </div>
   );

@@ -17,7 +17,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case "index":
-        return <Index />;
+        return <Index onNavigate={setCurrentPage} />;
       case "auth":
         return <Auth />;
       case "creator-dashboard":
@@ -25,7 +25,7 @@ function App() {
       case "advertiser-dashboard":
         return <AdvertiserDashboard />;
       case "creators":
-        return <Index />; // Placeholder - will show creators section
+        return <Index onNavigate={setCurrentPage} />; // Placeholder - will show creators section
       default:
         return <Index />;
     }
