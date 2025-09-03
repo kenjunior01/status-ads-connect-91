@@ -69,27 +69,25 @@ export const AdvertiserDashboard = () => {
     {
       id: "1",
       display_name: "Maria Beauty",
-      niche: "Beleza",
-      price_per_post: 150,
+      niche: "Beleza", 
+      price_range: "Mid-range",
       rating: 4.9,
       total_reviews: 24,
       total_campaigns: 18,
       is_verified: true,
       badge_level: "gold",
-      avatar_url: "",
       created_at: "2024-01-15T00:00:00Z"
     },
     {
       id: "2", 
       display_name: "Fitness Ana",
       niche: "Fitness",
-      price_per_post: 200,
+      price_range: "Premium",
       rating: 4.7,
       total_reviews: 19,
       total_campaigns: 22,
       is_verified: true,
       badge_level: "platinum",
-      avatar_url: "",
       created_at: "2024-02-20T00:00:00Z"
     }
   ];

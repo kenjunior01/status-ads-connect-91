@@ -3,17 +3,15 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface Profile {
   id: string;
-  user_id: string;
-  display_name: string | null;
-  bio: string | null;
+  profile_id: string;
+  display_name: string;
   niche: string | null;
-  price_per_post: number | null;
+  price_range: string | null;
   rating: number;
   total_reviews: number;
   total_campaigns: number;
   is_verified: boolean;
   badge_level: string;
-  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -26,12 +24,13 @@ export const useProfiles = () => {
   const fetchProfiles = async () => {
     try {
       setLoading(true);
+      // Using manual typing since creator_listings table is new
       const { data, error } = await supabase
-        .from('profiles')
+        .from('creator_listings' as any)
         .select('*')
         .not('display_name', 'is', null)
         .order('rating', { ascending: false })
-        .limit(50);
+        .limit(50) as { data: any[] | null, error: any };
 
       if (error) throw error;
 
@@ -39,17 +38,15 @@ export const useProfiles = () => {
       if (!data || data.length === 0) {
         const sampleProfiles: Profile[] = Array.from({ length: 24 }, (_, i) => ({
           id: `sample-${i + 1}`,
-          user_id: `user-${i + 1}`,
+          profile_id: `profile-${i + 1}`,
           display_name: `Creator ${i + 1}`,
-          bio: `Criador de conteúdo especializado em ${['Lifestyle', 'Tech', 'Food', 'Fashion', 'Fitness', 'Travel'][i % 6]}`,
           niche: ['Lifestyle', 'Tecnologia', 'Culinária', 'Moda', 'Fitness', 'Viagem'][i % 6],
-          price_per_post: Math.round((Math.random() * 50 + 15) * 100) / 100,
+          price_range: ['Budget-friendly', 'Mid-range', 'Premium', 'Contact for pricing'][i % 4],
           rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
           total_reviews: Math.floor(Math.random() * 50) + 5,
           total_campaigns: Math.floor(Math.random() * 30) + 1,
           is_verified: Math.random() > 0.7,
           badge_level: ['bronze', 'silver', 'gold', 'platinum'][Math.floor(Math.random() * 4)],
-          avatar_url: null,
           created_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
           updated_at: new Date().toISOString()
         }));

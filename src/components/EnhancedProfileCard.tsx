@@ -7,13 +7,12 @@ interface Profile {
   id: string;
   display_name: string;
   niche: string;
-  price_per_post: number;
+  price_range: string;
   rating: number;
   total_reviews: number;
   total_campaigns: number;
   is_verified: boolean;
   badge_level: string;
-  avatar_url?: string;
   created_at: string;
 }
 
@@ -72,19 +71,11 @@ export const EnhancedProfileCard = ({ profile, className, onSelect }: EnhancedPr
         <div className="relative">
           {/* Avatar */}
           <div className="relative w-full aspect-square bg-muted rounded-lg overflow-hidden mb-3">
-            {profile.avatar_url ? (
-              <img 
-                src={profile.avatar_url} 
-                alt={profile.display_name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-primary">
-                <span className="text-2xl font-bold text-primary-foreground">
-                  {profile.display_name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
+            <div className="w-full h-full flex items-center justify-center bg-gradient-primary">
+              <span className="text-2xl font-bold text-primary-foreground">
+                {profile.display_name.charAt(0).toUpperCase()}
+              </span>
+            </div>
             
             {/* Verification Badge */}
             {profile.is_verified && (
@@ -147,9 +138,9 @@ export const EnhancedProfileCard = ({ profile, className, onSelect }: EnhancedPr
           <div className="flex items-center justify-between">
             <div>
               <div className="text-lg font-bold text-foreground">
-                R$ {profile.price_per_post?.toFixed(2)}
+                {profile.price_range}
               </div>
-              <div className="text-xs text-muted-foreground">por post</div>
+              <div className="text-xs text-muted-foreground">faixa de preço</div>
             </div>
             
             {/* Quick Stats */}
