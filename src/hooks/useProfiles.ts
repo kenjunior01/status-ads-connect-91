@@ -34,26 +34,8 @@ export const useProfiles = () => {
 
       if (error) throw error;
 
-      // If no real data, create some sample data
-      if (!data || data.length === 0) {
-        const sampleProfiles: Profile[] = Array.from({ length: 24 }, (_, i) => ({
-          id: `sample-${i + 1}`,
-          profile_id: `profile-${i + 1}`,
-          display_name: `Creator ${i + 1}`,
-          niche: ['Lifestyle', 'Tecnologia', 'Culinária', 'Moda', 'Fitness', 'Viagem'][i % 6],
-          price_range: ['Budget-friendly', 'Mid-range', 'Premium', 'Contact for pricing'][i % 4],
-          rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
-          total_reviews: Math.floor(Math.random() * 50) + 5,
-          total_campaigns: Math.floor(Math.random() * 30) + 1,
-          is_verified: Math.random() > 0.7,
-          badge_level: ['bronze', 'silver', 'gold', 'platinum'][Math.floor(Math.random() * 4)],
-          created_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
-          updated_at: new Date().toISOString()
-        }));
-        setProfiles(sampleProfiles);
-      } else {
-        setProfiles(data);
-      }
+      // Return actual data without sample fallback
+      setProfiles(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error fetching profiles:', err);

@@ -128,11 +128,11 @@ export const Navigation = ({ onNavigate, currentPage }: NavigationProps) => {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => onNavigate('auth')}>
               <LogIn className="h-4 w-4 mr-2" />
               Entrar
             </Button>
-            <Button size="sm" className="bg-gradient-primary hover:bg-gradient-primary/90">
+            <Button size="sm" className="bg-gradient-primary hover:bg-gradient-primary/90" onClick={() => onNavigate('auth')}>
               <UserPlus className="h-4 w-4 mr-2" />
               Cadastrar
             </Button>
@@ -168,11 +168,11 @@ export const Navigation = ({ onNavigate, currentPage }: NavigationProps) => {
                 })}
                 
                 <div className="pt-4 border-t space-y-2">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start" onClick={() => handleNavigation('auth')}>
                     <LogIn className="h-4 w-4 mr-2" />
                     Entrar
                   </Button>
-                  <Button className="w-full justify-start bg-gradient-primary">
+                  <Button className="w-full justify-start bg-gradient-primary" onClick={() => handleNavigation('auth')}>
                     <UserPlus className="h-4 w-4 mr-2" />
                     Cadastrar
                   </Button>

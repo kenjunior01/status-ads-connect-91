@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import { CreatorDashboard } from "./pages/CreatorDashboard";
 import { AdvertiserDashboard } from "./pages/AdvertiserDashboard";
+import { AdminDashboard } from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -19,15 +20,17 @@ function App() {
       case "index":
         return <Index onNavigate={setCurrentPage} />;
       case "auth":
-        return <Auth />;
+        return <Auth onNavigate={setCurrentPage} />;
       case "creator-dashboard":
         return <CreatorDashboard />;
       case "advertiser-dashboard":
         return <AdvertiserDashboard />;
+      case "admin-dashboard":
+        return <AdminDashboard />;
       case "creators":
         return <Index onNavigate={setCurrentPage} />; // Placeholder - will show creators section
       default:
-        return <Index />;
+        return <Index onNavigate={setCurrentPage} />;
     }
   };
 
@@ -38,7 +41,9 @@ function App() {
         <Sonner />
         <div className="min-h-screen bg-background">
           <Navigation onNavigate={setCurrentPage} currentPage={currentPage} />
-          {renderPage()}
+          <main>
+            {renderPage()}
+          </main>
         </div>
       </TooltipProvider>
     </QueryClientProvider>

@@ -14,7 +14,6 @@ interface IndexProps {
 const Index = ({ onNavigate }: IndexProps) => {
   const { toast } = useToast();
   const { profiles, loading, getFeaturedProfiles, getNewProfiles, getDiscoverProfiles } = useProfiles();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
   useEffect(() => {
@@ -110,73 +109,6 @@ const Index = ({ onNavigate }: IndexProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card shadow-soft border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-card/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-primary p-3 rounded-xl shadow-medium">
-                <MessageSquare className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">StatusAds Pro</h1>
-                <p className="text-sm text-success">💰 Monetize seus Status</p>
-              </div>
-            </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#featured" className="text-foreground hover:text-primary font-medium transition-colors relative group">
-                Destaques
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
-              </a>
-              <a href="#new" className="text-foreground hover:text-primary font-medium transition-colors relative group">
-                Novos
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
-              </a>
-              <a href="#discover" className="text-foreground hover:text-primary font-medium transition-colors relative group">
-                Descobrir
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
-              </a>
-            </nav>
-
-            <div className="flex items-center space-x-3">
-              <div className="hidden md:flex space-x-3">
-                <Button variant="outline" onClick={() => onNavigate?.('auth')} className="hover:bg-primary hover:text-primary-foreground">
-                  Entrar
-                </Button>
-                <Button onClick={() => onNavigate?.('auth')} className="bg-primary hover:bg-primary-hover shadow-medium">
-                  Começar Agora
-                </Button>
-              </div>
-
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2 rounded-lg text-foreground hover:bg-muted transition-colors"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border animate-fade-in">
-              <nav className="flex flex-col space-y-4">
-                <a href="#featured" className="text-foreground hover:text-primary font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Destaques</a>
-                <a href="#new" className="text-foreground hover:text-primary font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Novos</a>
-                <a href="#discover" className="text-foreground hover:text-primary font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Descobrir</a>
-                <div className="flex flex-col space-y-3 pt-4 border-t border-border">
-                  <Button variant="outline" onClick={() => onNavigate?.('auth')}>Entrar</Button>
-                  <Button onClick={() => onNavigate?.('auth')} className="bg-primary hover:bg-primary-hover">Começar Agora</Button>
-                </div>
-              </nav>
-            </div>
-          )}
-        </div>
-      </header>
-
       {/* Trust Indicators Section */}
       <section className="py-8 px-4 bg-muted/30">
         <div className="max-w-7xl mx-auto">
