@@ -58,6 +58,59 @@ export type Database = {
           },
         ]
       }
+      creator_listings: {
+        Row: {
+          badge_level: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_verified: boolean | null
+          niche: string | null
+          price_range: string | null
+          profile_id: string
+          rating: number | null
+          total_campaigns: number | null
+          total_reviews: number | null
+          updated_at: string
+        }
+        Insert: {
+          badge_level?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          is_verified?: boolean | null
+          niche?: string | null
+          price_range?: string | null
+          profile_id: string
+          rating?: number | null
+          total_campaigns?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Update: {
+          badge_level?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_verified?: boolean | null
+          niche?: string | null
+          price_range?: string | null
+          profile_id?: string
+          rating?: number | null
+          total_campaigns?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_listings_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
