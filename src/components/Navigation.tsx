@@ -1,187 +1,92 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { 
-  Home, 
-  LayoutDashboard, 
-  Target, 
-  Users, 
-  Star,
-  Menu,
-  X,
-  LogIn,
-  UserPlus
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { cn } from '../lib/utils';
+import { Button } from './ui/button';
+import { Home, BarChart2, Users, Settings, LogOut, MessageSquare } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface NavigationProps {
-  onNavigate: (page: string) => void;
-  currentPage: string;
+  userRole?: 'admin' | 'creator' | 'advertiser';
 }
 
-export const Navigation = ({ onNavigate, currentPage }: NavigationProps) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+const Navigation: React.FC<NavigationProps> = ({ userRole = 'creator' }) => {
+  const location = useLocation();
+  const { logout } = useAuth();
 
-  const menuItems = [
-    {
-      title: "Início",
-      icon: Home,
-      page: "index",
-      description: "Página inicial da plataforma"
-    },
-    {
-      title: "Para Criadores",
-      icon: Star,
-      page: "creator-dashboard", 
-      description: "Monetize seu conteúdo"
-    },
-    {
-      title: "Para Anunciantes",
-      icon: Target,
-      page: "advertiser-dashboard",
-      description: "Encontre influenciadores"
-    },
-    {
-      title: "Explorar Criadores",
-      icon: Users,
-      page: "creators",
-      description: "Descubra talentos"
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const getNavItems = () => {
+    switch (userRole) {
+      case 'admin':
+        return [
+          { icon: Home, label: 'Dashboard', path: '/admin' },
+          { icon: Users, label: 'Usuários', path: '/admin/users' },
+          { icon: BarChart2, label: 'Campanhas', path: '/admin/campaigns' },
+          { icon: MessageSquare, label: 'Mensagens', path: '/admin/messages' },
+          { icon: Settings, label: 'Configurações', path: '/admin/settings' },
+        ];
+      case 'creator':
+        return [
+          { icon: Home, label: 'Dashboard', path: '/creator' },
+          { icon: BarChart2, label: 'Campanhas', path: '/creator/campaigns' },
+          { icon: MessageSquare, label: 'Mensagens', path: '/creator/messages' },
+          { icon: Settings, label: 'Perfil', path: '/creator/profile' },
+        ];
+      case 'advertiser':
+        return [
+          { icon: Home, label: 'Dashboard', path: '/advertiser' },
+          { icon: Users, label: 'Criadores', path: '/advertiser/creators' },
+          { icon: BarChart2, label: 'Campanhas', path: '/advertiser/campaigns' },
+          { icon: MessageSquare, label: 'Mensagens', path: '/advertiser/messages' },
+          { icon: Settings, label: 'Configurações', path: '/advertiser/settings' },
+        ];
+      default:
+        return [];
     }
-  ];
-
-  const handleNavigation = (page: string) => {
-    onNavigate(page);
-    setMobileOpen(false);
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div 
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => handleNavigation("index")}
-          >
-            <div className="bg-gradient-primary p-2 rounded-lg">
-              <LayoutDashboard className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <div className="font-bold text-xl bg-gradient-primary bg-clip-text text-transparent">
-                StatusAds
-              </div>
-              <div className="text-xs text-muted-foreground hidden sm:block">
-                Conectando marcas e criadores
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <NavigationMenuItem key={item.page}>
-                      <NavigationMenuTrigger
-                        className={cn(
-                          "bg-transparent hover:bg-accent data-[state=open]:bg-accent",
-                          currentPage === item.page && "bg-accent"
-                        )}
-                        onClick={() => handleNavigation(item.page)}
-                      >
-                        <Icon className="h-4 w-4 mr-2" />
-                        {item.title}
-                        {(item.page === "creator-dashboard" || item.page === "advertiser-dashboard") && (
-                          <Badge className="ml-2 text-xs bg-gradient-primary">
-                            Dashboard
-                          </Badge>
-                        )}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <div className="p-4 w-64">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Icon className="h-5 w-5 text-primary" />
-                            <h4 className="font-medium">{item.title}</h4>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {item.description}
-                          </p>
-                        </div>
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  );
-                })}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => onNavigate('auth')}>
-              <LogIn className="h-4 w-4 mr-2" />
-              Entrar
-            </Button>
-            <Button size="sm" className="bg-gradient-primary hover:bg-gradient-primary/90" onClick={() => onNavigate('auth')}>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Cadastrar
-            </Button>
-          </div>
-
-          {/* Mobile Menu */}
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="sm">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <div className="flex flex-col space-y-4 mt-8">
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Button
-                      key={item.page}
-                      variant={currentPage === item.page ? "default" : "ghost"}
-                      className="justify-start h-12"
-                      onClick={() => handleNavigation(item.page)}
-                    >
-                      <Icon className="h-5 w-5 mr-3" />
-                      <div className="text-left">
-                        <div className="font-medium">{item.title}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {item.description}
-                        </div>
-                      </div>
-                    </Button>
-                  );
-                })}
-                
-                <div className="pt-4 border-t space-y-2">
-                  <Button variant="outline" className="w-full justify-start" onClick={() => handleNavigation('auth')}>
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Entrar
-                  </Button>
-                  <Button className="w-full justify-start bg-gradient-primary" onClick={() => handleNavigation('auth')}>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Cadastrar
-                  </Button>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
+    <div className="h-screen w-64 bg-background border-r flex flex-col">
+      <div className="p-4">
+        <h2 className="text-2xl font-bold">Status Ads</h2>
+        <p className="text-muted-foreground text-sm">Conectando marcas e criadores</p>
       </div>
-    </nav>
+      
+      <nav className="flex-1 p-4">
+        <ul className="space-y-2">
+          {getNavItems().map((item, index) => (
+            <li key={index}>
+              <Link to={item.path}>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start",
+                    isActive(item.path) && "bg-muted"
+                  )}
+                >
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.label}
+                </Button>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      
+      <div className="p-4 mt-auto border-t">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-red-500 hover:text-red-700 hover:bg-red-50"
+          onClick={logout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Sair
+        </Button>
+      </div>
+    </div>
   );
 };
+
+export default Navigation;
