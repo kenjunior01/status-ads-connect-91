@@ -4,15 +4,14 @@ import { EnhancedProfileCard } from "@/components/EnhancedProfileCard";
 import { TrustIndicators, SocialProof, UrgencyCounter } from "@/components/TrustIndicators";
 import { EnhancedCTA, FloatingCTA } from "@/components/EnhancedCTA";
 import { useProfiles } from "@/hooks/useProfiles";
-import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, BarChart3, PlusCircle, FileText, Settings, Menu, X, Zap, Clock } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, BarChart3, PlusCircle, FileText, Settings, Menu, X, Zap, Clock, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
-interface IndexProps {
-  onNavigate?: (page: string) => void;
-}
-
-const Index = ({ onNavigate }: IndexProps) => {
+const Index = () => {
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
   const { profiles, loading, getFeaturedProfiles, getNewProfiles, getDiscoverProfiles } = useProfiles();
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
@@ -216,7 +215,7 @@ const Index = ({ onNavigate }: IndexProps) => {
             A primeira plataforma do Brasil que conecta você com empresas que querem anunciar nos seus status do WhatsApp.
           </p>
           <div className="animate-fade-in">
-            <EnhancedCTA variant="hero" onClick={() => onNavigate?.('auth')} />
+            <EnhancedCTA variant="hero" onClick={() => window.location.href = '/auth'} />
           </div>
           
           {/* Added urgency element */}
@@ -331,7 +330,7 @@ const Index = ({ onNavigate }: IndexProps) => {
       <FloatingCTA 
         show={showFloatingCTA} 
         variant="creator" 
-        onClick={() => onNavigate?.('auth')} 
+        onClick={() => window.location.href = '/auth'} 
       />
     </div>
   );
