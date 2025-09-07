@@ -1,337 +1,360 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { EnhancedProfileCard } from "@/components/EnhancedProfileCard";
-import { TrustIndicators, SocialProof, UrgencyCounter } from "@/components/TrustIndicators";
-import { EnhancedCTA, FloatingCTA } from "@/components/EnhancedCTA";
-import { useProfiles } from "@/hooks/useProfiles";
-import { useAuth } from "@/hooks/useAuth";
-import { Search, Users, MessageSquare, DollarSign, Star, TrendingUp, BarChart3, PlusCircle, FileText, Settings, Menu, X, Zap, Clock, LogOut } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Badge } from '../components/ui/badge';
+import { ArrowRight, CheckCircle, Star, TrendingUp, Users } from 'lucide-react';
+import EnhancedCTA from '../components/EnhancedCTA';
+import FloatingCTA from '../components/FloatingCTA';
+import TestimonialCard from '../components/TestimonialCard';
+import PricingCard from '../components/PricingCard';
+import FeatureCard from '../components/FeatureCard';
+import StatCard from '../components/StatCard';
 
-const Index = () => {
-  const { toast } = useToast();
-  const { user, signOut } = useAuth();
-  const { profiles, loading, getFeaturedProfiles, getNewProfiles, getDiscoverProfiles } = useProfiles();
-  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowFloatingCTA(window.scrollY > 800);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleProfileSelect = (profile: any) => {
-    toast({
-      title: "Perfil selecionado!",
-      description: `Você clicou no perfil de ${profile.display_name}`,
-    });
-  };
-
-  const ControlPanel = ({ userType }: { userType: 'creator' | 'advertiser' | 'admin' }) => {
-    const panels = {
-      creator: {
-        title: "Painel do Criador",
-        description: "Transforme seus stories em renda",
-        gradient: "bg-gradient-success",
-        actions: [
-          { icon: PlusCircle, label: "Criar Perfil", color: "bg-primary hover:bg-primary-hover" },
-          { icon: BarChart3, label: "Meus Ganhos", color: "bg-success hover:bg-success-glow" },
-          { icon: DollarSign, label: "Sacar Dinheiro", color: "bg-accent hover:bg-accent/90" },
-          { icon: Settings, label: "Configurações", color: "bg-muted hover:bg-muted/80" }
-        ]
-      },
-      advertiser: {
-        title: "Painel do Anunciante", 
-        description: "Encontre o criador perfeito",
-        gradient: "bg-gradient-primary",
-        actions: [
-          { icon: Search, label: "Buscar Criadores", color: "bg-primary hover:bg-primary-hover" },
-          { icon: FileText, label: "Minhas Campanhas", color: "bg-success hover:bg-success-glow" },
-          { icon: BarChart3, label: "Relatórios", color: "bg-accent hover:bg-accent/90" },
-          { icon: Settings, label: "Configurações", color: "bg-muted hover:bg-muted/80" }
-        ]
-      },
-      admin: {
-        title: "Painel Admin",
-        description: "Gerencie a plataforma",
-        gradient: "bg-gradient-hero",
-        actions: [
-          { icon: Users, label: "Usuários", color: "bg-primary hover:bg-primary-hover" },
-          { icon: BarChart3, label: "Analytics", color: "bg-success hover:bg-success-glow" },
-          { icon: Star, label: "Moderação", color: "bg-warning hover:bg-warning/90" },
-          { icon: Settings, label: "Sistema", color: "bg-muted hover:bg-muted/80" }
-        ]
-      }
-    };
-
-    const panel = panels[userType];
-
-    return (
-      <div className="bg-card rounded-xl border border-border p-6 shadow-medium hover:shadow-strong transition-all duration-300 group">
-        <div className={`w-full h-2 rounded-full mb-4 ${panel.gradient}`}></div>
-        <h3 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-          {panel.title}
-        </h3>
-        <p className="text-sm text-muted-foreground mb-6">{panel.description}</p>
-        <div className="grid grid-cols-2 gap-3">
-          {panel.actions.map((action, index) => (
-            <button
-              key={index}
-              className={`${action.color} text-white rounded-lg p-4 text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-medium flex items-center justify-center gap-2`}
-            >
-              <action.icon className="h-4 w-4" />
-              {action.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto"></div>
-          <div className="space-y-2">
-            <p className="text-lg font-medium text-foreground">Carregando criadores incríveis...</p>
-            <p className="text-sm text-muted-foreground">Preparando as melhores oportunidades para você</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Trust Indicators Section */}
-      <section className="py-8 px-4 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
-          <TrustIndicators />
-        </div>
-      </section>
-
-      {/* Featured Profiles */}
-      {getFeaturedProfiles().length > 0 && (
-        <section id="featured" className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <div className="flex justify-center items-center gap-2 mb-2">
-                <Star className="h-6 w-6 text-warning fill-warning" />
-                <h3 className="text-3xl font-bold text-foreground">Criadores em Destaque</h3>
-                <Star className="h-6 w-6 text-warning fill-warning" />
-              </div>
-              <p className="text-muted-foreground">Os melhores criadores da plataforma • Verificados e avaliados</p>
-              <div className="mt-4 inline-flex items-center gap-2 bg-success/10 text-success px-4 py-2 rounded-full">
-                <Zap className="h-4 w-4" />
-                <span className="text-sm font-medium">🔥 Mais procurados esta semana</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {getFeaturedProfiles().slice(0, 24).map((profile) => (
-                <EnhancedProfileCard 
-                  key={profile.id} 
-                  profile={profile} 
-                  onSelect={handleProfileSelect}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Urgency Counter */}
-      <section className="py-8 px-4 bg-card">
-        <div className="max-w-4xl mx-auto">
-          <UrgencyCounter endTime={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)} />
-        </div>
-      </section>
-
-      {/* New Profiles */}
-      {getNewProfiles().length > 0 && (
-        <section id="new" className="py-12 px-4 bg-muted/20">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <div className="flex justify-center items-center gap-2 mb-2">
-                <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
-                <h3 className="text-3xl font-bold text-foreground">Novos Talentos</h3>
-                <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
-              </div>
-              <p className="text-muted-foreground">Descubra os mais novos criadores • Preços especiais de lançamento</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {getNewProfiles().map((profile) => (
-                <EnhancedProfileCard 
-                  key={profile.id} 
-                  profile={profile} 
-                  onSelect={handleProfileSelect}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Social Proof Section */}
-      <section className="py-12 px-4 bg-card">
-        <div className="max-w-5xl mx-auto">
-          <SocialProof />
-        </div>
-      </section>
-
-      {/* Discover Section */}
-      {getDiscoverProfiles().length > 0 && (
-        <section id="discover" className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold text-foreground">Descubra Mais Criadores</h3>
-              <p className="text-muted-foreground">Explore diferentes nichos e encontre o criador perfeito</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {getDiscoverProfiles().map((profile) => (
-                <EnhancedProfileCard 
-                  key={profile.id} 
-                  profile={profile} 
-                  onSelect={handleProfileSelect}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Hero Section - Moved below listings */}
-      <section className="py-20 px-4 bg-gradient-hero text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Transforme seus Status em Renda
-          </h2>
-          <p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in">
-            A primeira plataforma do Brasil que conecta você com empresas que querem anunciar nos seus status do WhatsApp.
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-primary/10 to-background pt-20 pb-32">
+        <div className="container px-4 mx-auto text-center">
+          <Badge variant="outline" className="mb-4 px-3 py-1 text-sm bg-background/80 backdrop-blur-sm">
+            Plataforma Lançada 🚀
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+            Conectando Criadores e Anunciantes
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            Uma plataforma inovadora que conecta criadores de conteúdo com anunciantes para parcerias lucrativas e autênticas.
           </p>
-          <div className="animate-fade-in">
-            <EnhancedCTA variant="hero" onClick={() => window.location.href = '/auth'} />
-          </div>
-          
-          {/* Added urgency element */}
-          <div className="mt-8 inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full">
-            <Clock className="h-4 w-4" />
-            <span className="text-sm">⚡ Mais de 2.000 criadores já estão ganhando</span>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/auth">
+              <Button size="lg" className="gap-2">
+                Comece Agora <ArrowRight size={16} />
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button size="lg" variant="outline">
+                Saiba Mais
+              </Button>
+            </Link>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
       </section>
 
       {/* Stats Section */}
-      <section id="stats" className="py-16 bg-card">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-16 container px-4 mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard 
+            title="Criadores" 
+            value="10,000+" 
+            description="criadores ativos" 
+            icon={<Users className="h-5 w-5 text-primary" />} 
+          />
+          <StatCard 
+            title="Campanhas" 
+            value="25,000+" 
+            description="campanhas realizadas" 
+            icon={<TrendingUp className="h-5 w-5 text-primary" />} 
+          />
+          <StatCard 
+            title="Satisfação" 
+            value="98%" 
+            description="taxa de satisfação" 
+            icon={<CheckCircle className="h-5 w-5 text-primary" />} 
+          />
+          <StatCard 
+            title="Avaliação" 
+            value="4.9/5" 
+            description="avaliação média" 
+            icon={<Star className="h-5 w-5 text-primary" />} 
+          />
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-muted/50">
+        <div className="container px-4 mx-auto">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-foreground mb-4">Números da Plataforma</h3>
-            <p className="text-muted-foreground text-lg">Resultados que comprovam nosso sucesso</p>
+            <h2 className="text-3xl font-bold mb-4">Recursos Poderosos</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Nossa plataforma oferece ferramentas avançadas para maximizar o sucesso de criadores e anunciantes.
+            </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="bg-primary/10 p-6 rounded-xl mb-4 group-hover:bg-primary/20 transition-colors">
-                <Users className="h-10 w-10 mx-auto text-primary" />
-              </div>
-              <h3 className="text-3xl font-bold text-foreground">5.2k+</h3>
-              <p className="text-muted-foreground">Usuários Ativos</p>
-            </div>
-            <div className="text-center group">
-              <div className="bg-success/10 p-6 rounded-xl mb-4 group-hover:bg-success/20 transition-colors">
-                <DollarSign className="h-10 w-10 mx-auto text-success" />
-              </div>
-              <h3 className="text-3xl font-bold text-foreground">R$ 2.5M+</h3>
-              <p className="text-muted-foreground">Pagos aos Usuários</p>
-            </div>
-            <div className="text-center group">
-              <div className="bg-warning/10 p-6 rounded-xl mb-4 group-hover:bg-warning/20 transition-colors">
-                <Star className="h-10 w-10 mx-auto text-warning" />
-              </div>
-              <h3 className="text-3xl font-bold text-foreground">4.9★</h3>
-              <p className="text-muted-foreground">Avaliação Média</p>
-            </div>
-            <div className="text-center group">
-              <div className="bg-accent/10 p-6 rounded-xl mb-4 group-hover:bg-accent/20 transition-colors">
-                <TrendingUp className="h-10 w-10 mx-auto text-accent" />
-              </div>
-              <h3 className="text-3xl font-bold text-foreground">25k+</h3>
-              <p className="text-muted-foreground">Anúncios Realizados</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard 
+              title="Matchmaking Inteligente" 
+              description="Algoritmo avançado que conecta criadores e anunciantes com base em interesses e público-alvo." 
+              icon={<Users className="h-10 w-10" />} 
+            />
+            <FeatureCard 
+              title="Analytics Detalhados" 
+              description="Métricas completas para acompanhar o desempenho de campanhas e engajamento." 
+              icon={<TrendingUp className="h-10 w-10" />} 
+            />
+            <FeatureCard 
+              title="Pagamentos Seguros" 
+              description="Sistema de pagamento integrado com proteção para todas as partes envolvidas." 
+              icon={<CheckCircle className="h-10 w-10" />} 
+            />
+            <FeatureCard 
+              title="Chat Integrado" 
+              description="Comunicação direta entre criadores e anunciantes para alinhar expectativas." 
+              icon={<Star className="h-10 w-10" />} 
+            />
+            <FeatureCard 
+              title="Contratos Automatizados" 
+              description="Geração de contratos personalizados para cada parceria estabelecida." 
+              icon={<CheckCircle className="h-10 w-10" />} 
+            />
+            <FeatureCard 
+              title="Suporte Dedicado" 
+              description="Equipe de suporte disponível para ajudar em todas as etapas do processo." 
+              icon={<Users className="h-10 w-10" />} 
+            />
           </div>
         </div>
       </section>
 
-      {/* Control Panels */}
-      <section id="controls" className="py-16 px-4 bg-muted/20">
-        <div className="max-w-7xl mx-auto">
+      {/* How It Works */}
+      <section className="py-16 container px-4 mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Como Funciona</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Um processo simples e eficiente para conectar criadores e anunciantes.
+          </p>
+        </div>
+        <Tabs defaultValue="creators" className="max-w-3xl mx-auto">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="creators">Para Criadores</TabsTrigger>
+            <TabsTrigger value="advertisers">Para Anunciantes</TabsTrigger>
+          </TabsList>
+          <TabsContent value="creators" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-8">
+                  <div className="flex gap-4">
+                    <div className="bg-primary/10 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                      <span className="font-semibold">1</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Crie seu perfil</h3>
+                      <p className="text-muted-foreground">Cadastre-se e crie um perfil detalhado destacando seu nicho, métricas e trabalhos anteriores.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="bg-primary/10 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                      <span className="font-semibold">2</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Receba propostas</h3>
+                      <p className="text-muted-foreground">Anunciantes interessados em seu perfil enviarão propostas de campanhas alinhadas com seu conteúdo.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="bg-primary/10 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                      <span className="font-semibold">3</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Negocie e execute</h3>
+                      <p className="text-muted-foreground">Discuta os detalhes, aceite propostas e execute as campanhas recebendo pagamentos pela plataforma.</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="advertisers" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-8">
+                  <div className="flex gap-4">
+                    <div className="bg-primary/10 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                      <span className="font-semibold">1</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Defina sua campanha</h3>
+                      <p className="text-muted-foreground">Crie sua conta e defina os objetivos, público-alvo e orçamento da sua campanha.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="bg-primary/10 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                      <span className="font-semibold">2</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Encontre criadores</h3>
+                      <p className="text-muted-foreground">Use nosso sistema de matchmaking para encontrar os criadores ideais para sua marca.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="bg-primary/10 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                      <span className="font-semibold">3</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2">Gerencie campanhas</h3>
+                      <p className="text-muted-foreground">Envie propostas, negocie termos e acompanhe o desempenho das campanhas em tempo real.</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-muted/50">
+        <div className="container px-4 mx-auto">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-foreground mb-4">Painéis de Controle</h3>
-            <p className="text-muted-foreground text-lg">Ferramentas especializadas para cada tipo de usuário</p>
+            <h2 className="text-3xl font-bold mb-4">O Que Nossos Usuários Dizem</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Histórias de sucesso de criadores e anunciantes que utilizam nossa plataforma.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ControlPanel userType="creator" />
-            <ControlPanel userType="advertiser" />
-            <ControlPanel userType="admin" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <TestimonialCard 
+              quote="A plataforma revolucionou minha carreira como criador. Consegui parcerias que nunca imaginei ser possível." 
+              author="Carlos Silva" 
+              role="Criador de Conteúdo" 
+              avatarUrl="https://i.pravatar.cc/150?img=1" 
+              rating={5} 
+            />
+            <TestimonialCard 
+              quote="Como anunciante, encontrar criadores alinhados com nossa marca nunca foi tão fácil e eficiente." 
+              author="Ana Oliveira" 
+              role="Gerente de Marketing" 
+              avatarUrl="https://i.pravatar.cc/150?img=5" 
+              rating={5} 
+            />
+            <TestimonialCard 
+              quote="O sistema de matchmaking é impressionante. Todas as parcerias que fiz foram extremamente bem-sucedidas." 
+              author="Pedro Santos" 
+              role="Influenciador Digital" 
+              avatarUrl="https://i.pravatar.cc/150?img=3" 
+              rating={4} 
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-16 container px-4 mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Planos Simples e Transparentes</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Escolha o plano ideal para suas necessidades sem custos ocultos.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <PricingCard 
+            title="Básico" 
+            price="Grátis" 
+            description="Perfeito para começar" 
+            features={[
+              "Até 5 campanhas ativas",
+              "Matchmaking básico",
+              "Analytics essenciais",
+              "Suporte por email"
+            ]} 
+            buttonText="Começar Grátis" 
+            buttonVariant="outline" 
+          />
+          <PricingCard 
+            title="Profissional" 
+            price="R$99/mês" 
+            description="Para criadores e marcas em crescimento" 
+            features={[
+              "Até 20 campanhas ativas",
+              "Matchmaking avançado",
+              "Analytics completos",
+              "Contratos automatizados",
+              "Suporte prioritário"
+            ]} 
+            buttonText="Assinar Agora" 
+            buttonVariant="default" 
+            popular 
+          />
+          <PricingCard 
+            title="Empresarial" 
+            price="R$299/mês" 
+            description="Para operações em larga escala" 
+            features={[
+              "Campanhas ilimitadas",
+              "Matchmaking premium",
+              "Analytics avançados",
+              "API dedicada",
+              "Gerente de conta",
+              "Suporte 24/7"
+            ]} 
+            buttonText="Contato Comercial" 
+            buttonVariant="outline" 
+          />
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-primary/5">
+        <div className="container px-4 mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <EnhancedCTA 
+              title="Para Criadores" 
+              description="Amplie seu alcance e monetize seu conteúdo com parcerias autênticas e lucrativas." 
+              buttonText="Cadastre-se como Criador" 
+              icon={<Star className="h-6 w-6" />} 
+            />
+            <EnhancedCTA 
+              title="Para Anunciantes" 
+              description="Encontre os criadores perfeitos para sua marca e maximize o ROI das suas campanhas." 
+              buttonText="Cadastre-se como Anunciante" 
+              icon={<TrendingUp className="h-6 w-6" />} 
+              variant="secondary" 
+            />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-foreground text-background py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <footer className="bg-background border-t border-border py-12">
+        <div className="container px-4 mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="bg-primary p-3 rounded-xl">
-                  <MessageSquare className="h-6 w-6 text-white" />
-                </div>
-                <span className="text-xl font-bold">StatusAds Pro</span>
-              </div>
-              <p className="text-muted-foreground mb-4">
-                A plataforma líder no Brasil para monetização de status do WhatsApp.
-              </p>
-              <div className="flex space-x-2">
-                <div className="w-8 h-8 bg-muted rounded-full"></div>
-                <div className="w-8 h-8 bg-muted rounded-full"></div>
-                <div className="w-8 h-8 bg-muted rounded-full"></div>
-              </div>
+              <h3 className="font-bold text-lg mb-4">Status Ads Connect</h3>
+              <p className="text-muted-foreground">Conectando criadores e anunciantes para parcerias autênticas e lucrativas.</p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-background">Para Criadores</h4>
-              <ul className="space-y-3 text-muted-foreground">
-                <li className="hover:text-primary transition-colors cursor-pointer">Como Começar</li>
-                <li className="hover:text-primary transition-colors cursor-pointer">Definir Preços</li>
-                <li className="hover:text-primary transition-colors cursor-pointer">Central de Ajuda</li>
-                <li className="hover:text-primary transition-colors cursor-pointer">Política de Pagamentos</li>
+              <h4 className="font-semibold mb-4">Plataforma</h4>
+              <ul className="space-y-2">
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Início</Link></li>
+                <li><Link to="/auth" className="text-muted-foreground hover:text-foreground">Entrar</Link></li>
+                <li><Link to="/auth" className="text-muted-foreground hover:text-foreground">Cadastrar</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-background">Para Empresas</h4>
-              <ul className="space-y-3 text-muted-foreground">
-                <li className="hover:text-primary transition-colors cursor-pointer">Encontrar Criadores</li>
-                <li className="hover:text-primary transition-colors cursor-pointer">Anúncios Premium</li>
-                <li className="hover:text-primary transition-colors cursor-pointer">Suporte Empresarial</li>
-                <li className="hover:text-primary transition-colors cursor-pointer">API & Integrações</li>
+              <h4 className="font-semibold mb-4">Recursos</h4>
+              <ul className="space-y-2">
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Blog</Link></li>
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Guias</Link></li>
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Suporte</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Termos</Link></li>
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Privacidade</Link></li>
+                <li><Link to="/" className="text-muted-foreground hover:text-foreground">Cookies</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-muted mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 StatusAds Pro. Todos os direitos reservados.</p>
+          <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
+            <p>&copy; {new Date().getFullYear()} Status Ads Connect. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
 
       {/* Floating CTA */}
-      <FloatingCTA 
-        show={showFloatingCTA} 
-        variant="creator" 
-        onClick={() => window.location.href = '/auth'} 
-      />
+      <FloatingCTA />
     </div>
   );
 };
