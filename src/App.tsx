@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from './components/ui/toaster';
 import { Spinner } from './components/ui/spinner';
-import { supabaseUrl, supabaseKey } from './lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 // Pages
 import Index from './pages/Index';
@@ -17,8 +16,6 @@ import ChatInterface from './pages/ChatInterface';
 import ProfileSettings from './pages/ProfileSettings';
 import NotFound from './pages/NotFound';
 import Navigation from './components/Navigation';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 function App() {
   const [session, setSession] = useState(null);
@@ -49,9 +46,9 @@ function App() {
       if (user) {
         try {
           const { data, error } = await supabase
-            .from('profiles')
+            .from('user_roles')
             .select('role')
-            .eq('id', user.id)
+            .eq('user_id', user.id)
             .single();
 
           if (error) throw error;
