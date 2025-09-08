@@ -21,26 +21,26 @@ const Navigation: React.FC<NavigationProps> = ({ userRole = 'creator' }) => {
     switch (userRole) {
       case 'admin':
         return [
-          { icon: Home, label: 'Dashboard', path: '/admin' },
-          { icon: Users, label: 'Usuários', path: '/admin/users' },
-          { icon: BarChart2, label: 'Campanhas', path: '/admin/campaigns' },
-          { icon: MessageSquare, label: 'Mensagens', path: '/admin/messages' },
-          { icon: Settings, label: 'Configurações', path: '/admin/settings' },
+          { icon: Home, label: 'Dashboard', path: '/dashboard/admin' },
+          { icon: Users, label: 'Usuários', path: '/dashboard/admin' },
+          { icon: BarChart2, label: 'Campanhas', path: '/dashboard/admin' },
+          { icon: MessageSquare, label: 'Mensagens', path: '/dashboard/admin' },
+          { icon: Settings, label: 'Configurações', path: '/settings' },
         ];
       case 'creator':
         return [
-          { icon: Home, label: 'Dashboard', path: '/creator' },
-          { icon: BarChart2, label: 'Campanhas', path: '/creator/campaigns' },
-          { icon: MessageSquare, label: 'Mensagens', path: '/creator/messages' },
-          { icon: Settings, label: 'Perfil', path: '/creator/profile' },
+          { icon: Home, label: 'Dashboard', path: '/dashboard/creator' },
+          { icon: BarChart2, label: 'Campanhas', path: '/dashboard/creator' },
+          { icon: MessageSquare, label: 'Mensagens', path: '/dashboard/creator' },
+          { icon: Settings, label: 'Perfil', path: '/settings' },
         ];
       case 'advertiser':
         return [
-          { icon: Home, label: 'Dashboard', path: '/advertiser' },
-          { icon: Users, label: 'Criadores', path: '/advertiser/creators' },
-          { icon: BarChart2, label: 'Campanhas', path: '/advertiser/campaigns' },
-          { icon: MessageSquare, label: 'Mensagens', path: '/advertiser/messages' },
-          { icon: Settings, label: 'Configurações', path: '/advertiser/settings' },
+          { icon: Home, label: 'Dashboard', path: '/dashboard/advertiser' },
+          { icon: Users, label: 'Criadores', path: '/dashboard/advertiser' },
+          { icon: BarChart2, label: 'Campanhas', path: '/dashboard/advertiser' },
+          { icon: MessageSquare, label: 'Mensagens', path: '/dashboard/advertiser' },
+          { icon: Settings, label: 'Configurações', path: '/settings' },
         ];
       default:
         return [];

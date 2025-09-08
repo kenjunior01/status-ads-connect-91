@@ -51,14 +51,20 @@ function App() {
             .eq('user_id', user.id)
             .single();
 
-          if (error) throw error;
-          setUserRole(data?.role);
+          if (error) {
+            console.error('Error fetching user role:', error);
+            setUserRole('creator'); // Default fallback
+          } else {
+            setUserRole(data?.role || 'creator');
+          }
         } catch (error) {
           console.error('Error fetching user role:', error);
+          setUserRole('creator'); // Default fallback
         } finally {
           setLoading(false);
         }
       } else {
+        setUserRole(null);
         setLoading(false);
       }
     }
@@ -75,60 +81,72 @@ function App() {
   }
 
   // AppContent component to handle navigation and routes
-  const AppContent = () => (
-    <>
-      {user && <Navigation userRole={userRole} />}
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/" />} />
-        
-        {/* Protected routes */}
-        <Route 
-          path="/dashboard/creator" 
-          element={
-            user && userRole === 'creator' ? 
-            <CreatorDashboard /> : 
-            <Navigate to={user ? "/" : "/auth"} />
-          } 
-        />
-        <Route 
-          path="/dashboard/advertiser" 
-          element={
-            user && userRole === 'advertiser' ? 
-            <AdvertiserDashboard /> : 
-            <Navigate to={user ? "/" : "/auth"} />
-          } 
-        />
-        <Route 
-          path="/dashboard/admin" 
-          element={
-            user && userRole === 'admin' ? 
-            <AdminDashboard /> : 
-            <Navigate to={user ? "/" : "/auth"} />
-          } 
-        />
-        <Route 
-          path="/campaign/:id" 
-          element={
-            user ? <CampaignDetails /> : <Navigate to="/auth" />
-          } 
-        />
-        <Route 
-          path="/chat/:id" 
-          element={
-            user ? <ChatInterface /> : <Navigate to="/auth" />
-          } 
-        />
-        <Route 
-          path="/settings" 
-          element={
-            user ? <ProfileSettings /> : <Navigate to="/auth" />
-          } 
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
-  );
+  const AppContent = () => {
+    // Auto-redirect logged in users to their dashboard if they're on the home page
+    const shouldRedirectToDashboard = user && window.location.pathname === '/' && userRole;
+    
+    if (shouldRedirectToDashboard) {
+      const dashboardPath = `/dashboard/${userRole}`;
+      return <Navigate to={dashboardPath} replace />;
+    }
+
+    return (
+      <div className="flex">
+        {user && <Navigation userRole={userRole} />}
+        <div className={`flex-1 ${user ? 'ml-64' : ''}`}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={!user ? <Auth /> : <Navigate to={`/dashboard/${userRole || 'creator'}`} />} />
+            
+            {/* Protected routes */}
+            <Route 
+              path="/dashboard/creator" 
+              element={
+                user && userRole === 'creator' ? 
+                <CreatorDashboard /> : 
+                <Navigate to={user ? "/" : "/auth"} />
+              } 
+            />
+            <Route 
+              path="/dashboard/advertiser" 
+              element={
+                user && userRole === 'advertiser' ? 
+                <AdvertiserDashboard /> : 
+                <Navigate to={user ? "/" : "/auth"} />
+              } 
+            />
+            <Route 
+              path="/dashboard/admin" 
+              element={
+                user && userRole === 'admin' ? 
+                <AdminDashboard /> : 
+                <Navigate to={user ? "/" : "/auth"} />
+              } 
+            />
+            <Route 
+              path="/campaign/:id" 
+              element={
+                user ? <CampaignDetails /> : <Navigate to="/auth" />
+              } 
+            />
+            <Route 
+              path="/chat/:id" 
+              element={
+                user ? <ChatInterface /> : <Navigate to="/auth" />
+              } 
+            />
+            <Route 
+              path="/settings" 
+              element={
+                user ? <ProfileSettings /> : <Navigate to="/auth" />
+              } 
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
