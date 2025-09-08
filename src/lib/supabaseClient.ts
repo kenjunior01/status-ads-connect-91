@@ -1,0 +1,3 @@
+// This file provides backward compatibility for existing imports
+export const supabaseUrl = "https://mnbqncrsankayjbfdayw.supabase.co";
+export const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYnFuY3JzYW5rYXlqYmZkYXl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3MDUxOTcsImV4cCI6MjA3MjI4MTE5N30.Og6GrrajQTxhrcYqepldxUtKLIKy2z5lQurf7_GEf8A";

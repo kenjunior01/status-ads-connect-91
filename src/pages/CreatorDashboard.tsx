@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProgressCTA } from "@/components/EnhancedCTA";
+import EnhancedCTA from "@/components/EnhancedCTA";
 import { TrustIndicators } from "@/components/TrustIndicators";
 import { MetricsCard } from "@/components/MetricsCard";
 import { CampaignCard } from "@/components/CampaignCard";
@@ -181,10 +181,10 @@ export const CreatorDashboard = () => {
                   <CardTitle>Próximos Passos</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ProgressCTA
-                    currentStep={2}
-                    totalSteps={5}
-                    nextAction="Completar Perfil"
+                  <EnhancedCTA
+                    title="Próximos Passos"
+                    description={`Passo ${2} de ${5} concluído`}
+                    buttonText="Completar Perfil"
                     onClick={() => setActiveTab("profile")}
                   />
                 </CardContent>
@@ -257,3 +257,5 @@ export const CreatorDashboard = () => {
     </div>
   );
 };
+
+export default CreatorDashboard;

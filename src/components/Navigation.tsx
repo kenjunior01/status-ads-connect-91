@@ -11,7 +11,7 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ userRole = 'creator' }) => {
   const location = useLocation();
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -79,7 +79,7 @@ const Navigation: React.FC<NavigationProps> = ({ userRole = 'creator' }) => {
         <Button
           variant="ghost"
           className="w-full justify-start text-red-500 hover:text-red-700 hover:bg-red-50"
-          onClick={logout}
+          onClick={() => signOut()}
         >
           <LogOut className="mr-2 h-4 w-4" />
           Sair
